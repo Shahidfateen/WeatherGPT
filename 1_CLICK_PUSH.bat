@@ -1,9 +1,10 @@
 @echo off
 title Push WeatherGPT to GitHub
 echo ================================================================
-echo Pushing WeatherGPT code to https://github.com/SFateen/WeatherGPT.git
+echo Pushing WeatherGPT code to https://github.com/Shahidfateen/WeatherGPT.git
 echo ================================================================
 cd /d "%~dp0"
+git remote set-url origin https://github.com/Shahidfateen/WeatherGPT.git
 git push -u origin main
 echo.
 if %errorlevel% equ 0 (
