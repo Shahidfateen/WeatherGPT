@@ -146,8 +146,7 @@ async def chat_weather_guide(request: ChatRequest):
         daily_forecast=daily_forecast,
         location_name=request.location_name or "Your Area",
         language_code=request.language,
-        chat_history=request.history or [],
-        api_key_override=request.gemini_api_key,
+        api_key_override=(request.gemini_api_key or "").strip() or settings.GEMINI_API_KEY,
     )
 
     # 3. Log query to SQLite for offline access and history
@@ -1031,13 +1030,18 @@ async def root_app():
         <!-- Gemini Key -->
         <div>
           <div class="flex items-center justify-between mb-1">
-            <label id="label-gemini-key" class="font-bold text-slate-700">Google Gemini API Key</label>
+            <div class="flex items-center gap-2">
+              <label id="label-gemini-key" class="font-bold text-slate-700">Google Gemini API Key</label>
+              <span class="text-[10px] bg-emerald-100 text-emerald-700 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <i class="fa-solid fa-circle-check text-[9px]"></i> Built-in Active
+              </span>
+            </div>
             <a id="link-gemini-key" href="https://aistudio.google.com/app/apikey" target="_blank" class="text-sky-600 hover:underline flex items-center gap-1 font-semibold">
               Get Free Key <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
             </a>
           </div>
           <input id="key-gemini" type="password" placeholder="AIzaSy..." class="w-full font-mono text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-400 outline-none">
-          <p id="desc-gemini-key" class="text-[11px] text-slate-400 mt-1">Powers natural conversational weather advice and native audio.</p>
+          <p id="desc-gemini-key" class="text-[11px] text-emerald-600 font-medium mt-1"><i class="fa-solid fa-circle-check"></i> Built-in Gemini key active. Works across all devices and phones automatically.</p>
         </div>
 
         <!-- Open-Meteo Key -->
@@ -3780,8 +3784,14 @@ async def root_app():
     }
 
     // Load saved settings on startup
+    const DEFAULT_BUILTIN_GEMINI_KEY = "AIzaSyCx80ru6-RXeTi3GvqkFsMVyMf-vpgIoVw";
+
     function initSettings() {
-      const savedGemini = localStorage.getItem('weathergpt_gemini_key') || "";
+      let savedGemini = localStorage.getItem('weathergpt_gemini_key');
+      if (!savedGemini) {
+        savedGemini = DEFAULT_BUILTIN_GEMINI_KEY;
+        localStorage.setItem('weathergpt_gemini_key', DEFAULT_BUILTIN_GEMINI_KEY);
+      }
       const savedOM = localStorage.getItem('weathergpt_openmeteo_key') || "";
       const savedLang = localStorage.getItem('weathergpt_lang') || "en";
       
@@ -4245,7 +4255,7 @@ async def root_app():
       btn.disabled = true;
       btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>`;
 
-      const geminiKey = localStorage.getItem('weathergpt_gemini_key') || "";
+      const geminiKey = localStorage.getItem('weathergpt_gemini_key') || DEFAULT_BUILTIN_GEMINI_KEY;
       const omKey = localStorage.getItem('weathergpt_openmeteo_key') || "";
 
       try {

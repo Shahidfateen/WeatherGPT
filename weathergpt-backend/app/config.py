@@ -23,7 +23,8 @@ class Settings:
     DB_PATH: Path = BASE_DIR / os.getenv("DB_PATH", "weather_cache.db")
     CACHE_EXPIRY_HOURS: int = int(os.getenv("CACHE_EXPIRY_HOURS", "3"))
     
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    BUILTIN_GEMINI_KEY: str = "AIzaSyCx80ru6-RXeTi3GvqkFsMVyMf-vpgIoVw"
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "").strip() or BUILTIN_GEMINI_KEY
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     
     OPEN_METEO_API_KEY: str = os.getenv("OPEN_METEO_API_KEY", "")
